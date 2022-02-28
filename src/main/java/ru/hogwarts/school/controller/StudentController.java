@@ -2,6 +2,7 @@ package ru.hogwarts.school.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.exception.NullStudentException;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
@@ -17,41 +18,39 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("get/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<Student> getStudent(@PathVariable Long id) {
         Student student = studentService.getStudent(id);
         if (student == null) {
-            return ResponseEntity.notFound().build();
+            throw new NullStudentException();
         }
         return ResponseEntity.ok(student);
     }
 
     @PostMapping
-    public ResponseEntity<Student> addStudent(@RequestBody Student student) {
-        Student createdStudent = studentService.addStudent(student);
-        return ResponseEntity.ok(createdStudent);
+    public Student addStudent(@RequestBody Student student) {
+        return studentService.addStudent(student);
     }
 
     @PutMapping
-    public ResponseEntity<Student> editStudent(@RequestBody Student student) {
-        Student updatedStudent = studentService.editStudent(student.getId(), student);
-        return ResponseEntity.ok(updatedStudent);
+    public Student editStudent(@RequestBody Student student) {
+        return studentService.editStudent(student.getId(), student);
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
         Student student = studentService.deleteStudent(id);
         if (student == null) {
-            return ResponseEntity.badRequest().build();
+            throw new NullStudentException();
         }
         return ResponseEntity.ok(student);
     }
 
-    @GetMapping("sort/{age}")
-    public ResponseEntity<List<Student>> getSortedStudentsByAge(@PathVariable int age) {
-        List<Student> students = studentService.getSortedStudentsByAge(age);
+    @GetMapping("{age}")
+    public ResponseEntity<List<Student>> getFilteredStudentsByAge(@PathVariable int age) {
+        List<Student> students = studentService.getFilteredStudentsByAge(age);
         if (students == null) {
-            return ResponseEntity.notFound().build();
+            throw new NullStudentException();
         }
         return ResponseEntity.ok(students);
     }

@@ -1,6 +1,7 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exception.NullStudentException;
 import ru.hogwarts.school.model.Student;
 
 import java.util.ArrayList;
@@ -21,34 +22,37 @@ public class StudentService {
 
     public Student getStudent(Long id) {
         if (!students.containsKey(id)) {
-            return null;
+            throw new NullStudentException();
         }
         return students.get(id);
     }
 
     public Student editStudent(Long id, Student student) {
+        if (!students.containsKey(id)) {
+            throw new NullStudentException();
+        }
         students.put(id, student);
         return student;
     }
 
     public Student deleteStudent(Long id) {
         if (!students.containsKey(id)) {
-            return null;
+            throw new NullStudentException();
         }
         return students.remove(id);
     }
 
-    public List<Student> getSortedStudentsByAge(int age) {
-        List<Student> sortedStudents = new ArrayList<>();
+    public List<Student> getFilteredStudentsByAge(int age) {
+        List<Student> filteredStudents = new ArrayList<>();
         for (Student student : students.values()) {
             if (student.getAge() == age) {
-                sortedStudents.add(student);
+                filteredStudents.add(student);
             }
         }
-        if (sortedStudents.size() == 0) {
-            return null;
+        if (filteredStudents.size() == 0) {
+            throw new NullStudentException();
         }
-        return sortedStudents;
+        return filteredStudents;
     }
 
 }

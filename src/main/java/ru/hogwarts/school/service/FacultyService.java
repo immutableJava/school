@@ -1,6 +1,7 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.exception.NullFacultyException;
 import ru.hogwarts.school.model.Faculty;
 
 import java.util.ArrayList;
@@ -21,34 +22,37 @@ public class FacultyService {
 
     public Faculty getFaculty(Long id) {
         if (!faculties.containsKey(id)) {
-            return null;
+            throw new NullFacultyException();
         }
         return faculties.get(id);
     }
 
     public Faculty editFaculty(Long id, Faculty faculty) {
+        if (!faculties.containsKey(id)) {
+            throw new NullFacultyException();
+        }
         faculties.put(id, faculty);
         return faculty;
     }
 
     public Faculty deleteFaculty(Long id) {
         if (!faculties.containsKey(id)) {
-            return null;
+            throw new NullFacultyException();
         }
         return faculties.remove(id);
     }
 
-    public List<Faculty> getSortedFacultiesByColor(String color) {
-        List<Faculty> sortedFaculties = new ArrayList<>();
+    public List<Faculty> getFilteredFacultiesByColor(String color) {
+        List<Faculty> filteredFaculties = new ArrayList<>();
         for (Faculty faculty : faculties.values()) {
             if (faculty.getColor().equals(color)) {
-                sortedFaculties.add(faculty);
+                filteredFaculties.add(faculty);
             }
         }
-        if (sortedFaculties.size() == 0) {
-            return null;
+        if (filteredFaculties.size() == 0) {
+            throw new NullFacultyException();
         }
-        return sortedFaculties;
+        return filteredFaculties;
     }
 }
 

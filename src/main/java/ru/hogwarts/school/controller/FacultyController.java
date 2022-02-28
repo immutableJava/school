@@ -2,6 +2,7 @@ package ru.hogwarts.school.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.school.exception.NullFacultyException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.service.FacultyService;
 
@@ -17,41 +18,39 @@ public class FacultyController {
         this.facultyService = facultyService;
     }
 
-    @GetMapping("get/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<Faculty> getFaculty(@PathVariable Long id) {
         Faculty faculty = facultyService.getFaculty(id);
         if (faculty == null) {
-            return ResponseEntity.notFound().build();
+            throw new NullFacultyException();
         }
         return ResponseEntity.ok(faculty);
     }
 
     @PostMapping
-    public ResponseEntity<Faculty> addFaculty(@RequestBody Faculty faculty) {
-        Faculty createdFaculty = facultyService.addFaculty(faculty);
-        return ResponseEntity.ok(createdFaculty);
+    public Faculty addFaculty(@RequestBody Faculty faculty) {
+        return facultyService.addFaculty(faculty);
     }
 
     @PutMapping
-    public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
-        Faculty updatedFaculty = facultyService.editFaculty(faculty.getId(), faculty);
-        return ResponseEntity.ok(updatedFaculty);
+    public Faculty editFaculty(@RequestBody Faculty faculty) {
+        return facultyService.editFaculty(faculty.getId(), faculty);
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long id) {
         Faculty faculty = facultyService.deleteFaculty(id);
         if (faculty == null) {
-            return ResponseEntity.badRequest().build();
+            throw new NullFacultyException();
         }
         return ResponseEntity.ok(faculty);
     }
 
-    @GetMapping("sort/{color}")
-    public ResponseEntity<List<Faculty>> getSortedFacultiesByAge(@PathVariable String color) {
-        List<Faculty> faculties = facultyService.getSortedFacultiesByColor(color);
+    @GetMapping()
+    public ResponseEntity<List<Faculty>> getFilteredFacultiesByAge(@RequestParam String color) {
+        List<Faculty> faculties = facultyService.getFilteredFacultiesByColor(color);
         if (faculties == null) {
-            return ResponseEntity.notFound().build();
+            throw new NullFacultyException();
         }
         return ResponseEntity.ok(faculties);
     }
