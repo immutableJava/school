@@ -34,24 +34,18 @@ public class FacultyController {
 
     @PutMapping
     public Faculty editFaculty(@RequestBody Faculty faculty) {
-        return facultyService.editFaculty(faculty.getId(), faculty);
+        return facultyService.editFaculty(faculty);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long id) {
-        Faculty faculty = facultyService.deleteFaculty(id);
-        if (faculty == null) {
-            throw new NullFacultyException();
-        }
-        return ResponseEntity.ok(faculty);
+    public ResponseEntity deleteFaculty(@PathVariable Long id) {
+        facultyService.deleteFaculty(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping()
-    public ResponseEntity<List<Faculty>> getFilteredFacultiesByAge(@RequestParam String color) {
-        List<Faculty> faculties = facultyService.getFilteredFacultiesByColor(color);
-        if (faculties == null) {
-            throw new NullFacultyException();
-        }
+    public ResponseEntity<List<Faculty>> findByColor(@RequestParam String color) {
+        List<Faculty> faculties = facultyService.findByColor(color);
         return ResponseEntity.ok(faculties);
     }
 

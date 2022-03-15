@@ -1,58 +1,41 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.hogwarts.school.exception.NullStudentException;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class StudentService {
-    private final Map<Long, Student> students = new HashMap<>();
-    private long id = 0;
+
+    private final StudentRepository studentRepository;
+
+    @Autowired
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
+
 
     public Student addStudent(Student student) {
-        student.setId(++id);
-        students.put(id, student);
-        return student;
+        return studentRepository.save(student);
     }
 
     public Student getStudent(Long id) {
-        if (!students.containsKey(id)) {
-            throw new NullStudentException();
-        }
-        return students.get(id);
+        return studentRepository.findById(id).get();
     }
 
-    public Student editStudent(Long id, Student student) {
-        if (!students.containsKey(id)) {
-            throw new NullStudentException();
-        }
-        students.put(id, student);
-        return student;
+    public Student editStudent(Student student) {
+        return studentRepository.save(student);
     }
 
-    public Student deleteStudent(Long id) {
-        if (!students.containsKey(id)) {
-            throw new NullStudentException();
-        }
-        return students.remove(id);
+    public void deleteStudent(Long id) {
+        studentRepository.deleteById(id);
     }
 
-    public List<Student> getFilteredStudentsByAge(int age) {
-        List<Student> filteredStudents = new ArrayList<>();
-        for (Student student : students.values()) {
-            if (student.getAge() == age) {
-                filteredStudents.add(student);
-            }
-        }
-        if (filteredStudents.size() == 0) {
-            throw new NullStudentException();
-        }
-        return filteredStudents;
+    public List<Student> findByAge(int age) {
+        return studentRepository.findByAge(age);
     }
 
 }
