@@ -1,58 +1,39 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.hogwarts.school.exception.NullFacultyException;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.repository.FacultyRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class FacultyService {
-    private final Map<Long, Faculty> faculties = new HashMap<>();
-    private long id = 0;
+    private final FacultyRepository facultyRepository;
+
+    @Autowired
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
+    }
 
     public Faculty addFaculty(Faculty faculty) {
-        faculty.setId(++id);
-        faculties.put(id, faculty);
-        return faculty;
+        return facultyRepository.save(faculty);
     }
 
     public Faculty getFaculty(Long id) {
-        if (!faculties.containsKey(id)) {
-            throw new NullFacultyException();
-        }
-        return faculties.get(id);
+        return facultyRepository.findById(id).get();
     }
 
-    public Faculty editFaculty(Long id, Faculty faculty) {
-        if (!faculties.containsKey(id)) {
-            throw new NullFacultyException();
-        }
-        faculties.put(id, faculty);
-        return faculty;
+    public Faculty editFaculty(Faculty faculty) {
+        return facultyRepository.save(faculty);
     }
 
-    public Faculty deleteFaculty(Long id) {
-        if (!faculties.containsKey(id)) {
-            throw new NullFacultyException();
-        }
-        return faculties.remove(id);
+    public void deleteFaculty(Long id) {
+        facultyRepository.deleteById(id);
     }
 
-    public List<Faculty> getFilteredFacultiesByColor(String color) {
-        List<Faculty> filteredFaculties = new ArrayList<>();
-        for (Faculty faculty : faculties.values()) {
-            if (faculty.getColor().equals(color)) {
-                filteredFaculties.add(faculty);
-            }
-        }
-        if (filteredFaculties.size() == 0) {
-            throw new NullFacultyException();
-        }
-        return filteredFaculties;
+    public List<Faculty> findByColor(String color) {
+        return facultyRepository.findByColor(color);
     }
 }
 
