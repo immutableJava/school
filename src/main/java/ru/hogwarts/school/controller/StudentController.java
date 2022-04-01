@@ -27,6 +27,15 @@ public class StudentController {
         return ResponseEntity.ok(student);
     }
 
+    @GetMapping("/getBetweenAge")
+    public ResponseEntity<List<Student>> getStudentsBetweenAge(@RequestParam int minAge, @RequestParam int maxAge) {
+        List<Student> students = studentService.getStudentBetweenAge(minAge, maxAge);
+        if (students == null) {
+            throw new NullStudentException();
+        }
+        return ResponseEntity.ok(students);
+    }
+
     @PostMapping
     public Student addStudent(@RequestBody Student student) {
         return studentService.addStudent(student);
