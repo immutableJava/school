@@ -44,9 +44,8 @@ public class FacultyController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Faculty>> findByColor(@RequestParam String color) {
-        List<Faculty> faculties = facultyService.findByColor(color);
-        return ResponseEntity.ok(faculties);
+    public List<Faculty> findFacultiesByColor(@RequestParam String color) {
+        return facultyService.findFacultiesByColor(color);
     }
 
 }
