@@ -40,7 +40,7 @@ class SchoolApplicationTests {
     @Test
     public void testGetStudent() throws Exception {
 
-        assertThat(restTemplate.getForObject("http://localhost:" + port + "/student", Student.class))
+                assertThat(restTemplate.getForObject("http://localhost:" + port + "/student", Student.class))
                 .isNotNull();
     }
 
@@ -54,7 +54,7 @@ class SchoolApplicationTests {
     public void testAddStudent() throws Exception {
         Student student = new Student();
         student.setName("Joseph Williams");
-        student.setId(1);
+        student.setId(1L);
         student.setAge(14);
         assertThat(restTemplate.postForObject("http://localhost:" + port + "/student/", student, Student.class))
                 .isNotNull();
@@ -64,7 +64,7 @@ class SchoolApplicationTests {
     public void testEditStudent() throws Exception {
         Student student = new Student();
         student.setName("Joseph Williams");
-        student.setId(1);
+        student.setId(1L);
         student.setAge(14);
         HttpEntity<Student> entity = new HttpEntity<>(student);
         ResponseEntity<Student> response =
@@ -78,7 +78,7 @@ class SchoolApplicationTests {
     public void testDeleteStudent() throws Exception {
         Student student = new Student();
         student.setName("Joseph Williams");
-        student.setId(1);
+        student.setId(1L);
         student.setAge(14);
         HttpEntity<Student> entity = new HttpEntity<>(student);
         ResponseEntity<Student> response =
